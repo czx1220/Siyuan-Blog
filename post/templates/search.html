@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>find</title>
+<link rel="stylesheet" type="text/css" href="{% static 'css/style_show.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+<script src="{% static 'js/space.js' %}"></script>
+
+    <style>
+        input[type="text"] {
+  background-color: #f2f2f2;
+  border: 1px solid #909090;
+  padding: 5px;
+  font-size: 14px;
+   margin: 0 auto;
+    width: 300px;
+  height: 40px;
+}
+        button[type="submit"] {
+  background-color: #3498db;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+  background-color: #2980b9;
+}
+
+    .bold-black-text2 {
+      font-weight: bold; /* 设置字体加粗 */
+      color: #000; /* 设置字体颜色为黑色 */
+      font-size: 30px; /* 字号变大为36像素 */
+      margin-top: 20px; /* 调整此值以改变移动的距离 */
+      font-family: "楷体", "KaiTi", cursive;
+      margin-left: 80px; /* 设置左边距为20像素，您可以根据需要调整此值 */
+    }
+    .result{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .bold-black-text {
+      font-weight: bold; /* 设置字体加粗 */
+      color: #000; /* 设置字体颜色为黑色 */
+      font-size: 30px; /* 字号变大为36像素 */
+      margin-top: 20px; /* 调整此值以改变移动的距离 */
+      font-family: "宋体", "KaiTi", cursive;
+    }
+
+    .bold-black-text2 {
+      font-weight: bold; /* 设置字体加粗 */
+      color: #000; /* 设置字体颜色为黑色 */
+      font-size: 30px; /* 字号变大为36像素 */
+      margin-top: 20px; /* 调整此值以改变移动的距离 */
+      font-family: "宋体", "KaiTi", cursive;
+      margin-left: 100px; /* 设置左边距为20像素，您可以根据需要调整此值 */
+    }
+    </style>
+</head>
+<body>
+    <div id="container">
+    <div id="wrap">
+      <header id="header">
+        <div id="banner"></div>
+        <div id="header-outer" class="outer">
+          <div id="header-inner" class="inner">
+            <nav id="main-nav">
+                <a class="main-nav-link" href="{% url "choose" %}">首页</a>
+                {% comment %} <a class="main-nav-link" href="/archive/">归档</a> {% endcomment %}
+                <a class="main-nav-link" href="/aboutme" target="_blank">关于</a>
+                <a class="main-nav-link" href="/post">返回个人主页</a>
+                {% comment %} <a class="main-nav-link" href="/admin">个人管理</a> {% endcomment %}
+                <a class="main-nav-link" >{% block flag %}{% endblock %}</a>
+            </nav>
+        
+          </div>
+        </div>
+      </header>
+
+  <!--搜索框-->
+
+<div class="outer">
+
+    <p class="bold-black-text">思源·博客</p>
+    <br>
+    <div class="result">
+  {% block search %}
+  <form method="POST" action="{% url 'search' %}" style="display: flex; flex-wrap: wrap; gap: 10px;">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">搜索</button>
+  </form>
+  {% endblock %}
+</div>
+
+  {% comment %} {% block search %}
+  <form method="POST" action="{% url 'search' %}" >
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" >搜索</button>
+  </form>
+  {% endblock %} {% endcomment %}
+
+
+
+
+  {% if recent_posts  %}
+  <p class="bold-black-text2">最近帖子</p>
+  <div class="card-container">
+    {% for post in recent_posts %}
+    <div class="card">
+      <div class="card-header">
+         <a href="{% url 'post_detail' post.id %}" style="text-decoration: none;">{{ post.title }} by {{ post.user }}</a>
+      </div>
+      <div class="card-body">
+        <p>{{ post.desc }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% elif results %}
+  <p class="bold-black-text2">搜索结果</p>
+  <br>
+
+  <div class="card-container">
+    {% for post in results %}
+    <div class="card">
+      <div class="card-header">
+         <a href="{% url 'post_detail' post.id %}" style="text-decoration: none;">{{ post.title }} by {{ post.user }}</a>
+      </div>
+      <div class="card-body">
+        <p>{{ post.desc }}</p>
+      </div>
+    </div>
+    {% endfor %}                                
+  </div>
+  {% else %}
+    <p>没有找到匹配的结果。</p>
+  {% endif %}
+
+
+               
+</div>
+
+
+</body>
+</html>
